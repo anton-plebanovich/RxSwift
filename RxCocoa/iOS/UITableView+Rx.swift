@@ -83,8 +83,13 @@ extension Reactive where Base: UITableView {
             return { configureCell in
                 let dataSource = RxTableViewReactiveArrayDataSourceSequenceWrapper<Sequence> { tv, i, item in
                     let indexPath = IndexPath(item: i, section: 0)
-                    let cell = tv.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! Cell
-                    configureCell(i, item, cell)
+                    
+                    var cell: Cell!
+                    UIView.performWithoutAnimation {
+                        cell = tv.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! Cell
+                        configureCell(i, item, cell)
+                    }
+                    
                     return cell
                 }
                 return self.items(dataSource: dataSource)(source)
